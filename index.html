@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Futhark — Oráculo das Runas</title>
+<style>
+:root{
+  --bg:#090909; --panel:#11110f; --panel2:#171713; --gold:#c7a55a;
+  --gold2:#e6cc86; --text:#eee8d8; --muted:#9b9689; --line:#302b20;
+}
+*{box-sizing:border-box}
+body{
+  margin:0; min-height:100vh; color:var(--text);
+  font-family:Georgia,"Times New Roman",serif;
+  background:
+    radial-gradient(circle at 50% -10%,#2a2416 0,#11100d 34%,#090909 70%);
+}
+body:before{
+  content:""; position:fixed; inset:0; pointer-events:none; opacity:.12;
+  background-image:radial-gradient(#fff 0.5px,transparent .5px);
+  background-size:7px 7px;
+}
+main{width:min(1050px,92%);margin:auto;padding:55px 0 70px}
+header{text-align:center;margin-bottom:42px}
+.eyebrow{letter-spacing:5px;text-transform:uppercase;color:var(--gold);font-size:12px}
+h1{font-size:clamp(42px,7vw,76px);margin:13px 0 5px;font-weight:normal;letter-spacing:2px}
+.subtitle{color:var(--muted);font-size:16px}
+.panel{
+  background:linear-gradient(145deg,rgba(23,23,19,.94),rgba(12,12,11,.94));
+  border:1px solid var(--line); border-radius:18px; padding:30px;
+  box-shadow:0 20px 70px #0008;
+}
+.question{display:flex;gap:12px;flex-wrap:wrap;margin-bottom:25px}
+input{
+  flex:1;min-width:220px;background:#0b0b0a;border:1px solid var(--line);
+  border-radius:10px;padding:15px 16px;color:var(--text);font:16px Georgia;
+  outline:none;
+}
+input:focus{border-color:#806b37}
+button{
+  border:1px solid #806b37;background:linear-gradient(#cdb06a,#9f813b);
+  color:#16130d;font-weight:bold;padding:14px 22px;border-radius:10px;
+  cursor:pointer;font-family:Georgia;font-size:15px;transition:.2s;
+}
+button:hover{transform:translateY(-1px);filter:brightness(1.08)}
+.controls{display:flex;justify-content:space-between;align-items:center;gap:15px;flex-wrap:wrap}
+select,.toggle{
+  background:#0b0b0a;color:var(--text);border:1px solid var(--line);
+  border-radius:9px;padding:10px 12px;font-family:Georgia;
+}
+.toggle{display:flex;gap:8px;align-items:center;color:var(--muted);font-size:14px}
+.toggle input{min-width:auto;flex:none;accent-color:var(--gold)}
+.cards{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;margin-top:25px}
+.card{
+  min-height:290px;border:1px solid var(--line);border-radius:15px;
+  background:#0c0c0b;display:flex;flex-direction:column;align-items:center;
+  justify-content:center;text-align:center;padding:25px;position:relative;
+  overflow:hidden;
+}
+.card:after{content:"";position:absolute;inset:10px;border:1px solid #262218;border-radius:10px;pointer-events:none}
+.rune{font-family:"Times New Roman",serif;font-size:104px;line-height:1;color:var(--gold2);text-shadow:0 0 25px #c7a55a33}
+.name{font-size:20px;letter-spacing:2px;margin-top:16px}
+.position{color:var(--muted);font-size:12px;letter-spacing:2px;text-transform:uppercase;margin-top:7px}
+.meaning{margin-top:11px;color:#c6c0b1;font-size:14px}
+.placeholder{color:#5f5b51;font-size:48px}
+.interpretation{margin-top:25px;padding:22px;border-left:2px solid var(--gold);background:#0d0d0b}
+.interpretation h2{margin:0 0 10px;font-weight:normal;color:var(--gold2)}
+.interpretation p{margin:0;color:#c6c0b1;line-height:1.65}
+.history{margin-top:55px}
+.history h2{font-weight:normal;text-align:center}
+.rune-grid{display:grid;grid-template-columns:repeat(8,1fr);gap:9px;margin-top:20px}
+.mini{border:1px solid var(--line);border-radius:8px;padding:10px 4px;text-align:center;background:#10100e}
+.mini .symbol{font-size:31px;color:var(--gold)}
+.mini small{display:block;color:var(--muted);font-size:10px;margin-top:4px}
+footer{text-align:center;color:#666155;font-size:12px;margin-top:40px;line-height:1.6}
+@media(max-width:700px){
+  main{padding-top:35px}.panel{padding:20px}.cards{grid-template-columns:1fr}
+  .card{min-height:240px}.rune-grid{grid-template-columns:repeat(4,1fr)}
+}
+</style>
+</head>
+<body>
+<main>
+<header>
+  <div class="eyebrow">ᚠ ᚢ ᚦ ᚨ ᚱ ᚲ</div>
+  <h1>Futhark</h1>
+  <div class="subtitle">Um oráculo digital inspirado no Antigo Futhark</div>
+</header>
+
+<section class="panel">
+  <div class="question">
+    <input id="question" placeholder="Digite uma pergunta ou intenção (opcional)">
+    <button onclick="draw()">Sortear runas</button>
+  </div>
+  <div class="controls">
+    <label>
+      Tiragem:
+      <select id="count">
+        <option value="1">1 runa — orientação</option>
+        <option value="3">3 runas — passado / presente / futuro</option>
+      </select>
+    </label>
+    <label class="toggle">
+      <input type="checkbox" id="reversed"> Permitir runas invertidas
+    </label>
+  </div>
+
+  <div class="cards" id="cards"></div>
+  <div class="interpretation" id="interpretation" style="display:none"></div>
+</section>
+
+<section class="history">
+  <h2>As 24 runas do Antigo Futhark</h2>
+  <div class="rune-grid" id="runeGrid"></div>
+</section>
+
+<footer>
+  O Antigo Futhark é um sistema histórico de escrita germânico. As interpretações divinatórias
+  apresentadas aqui pertencem a tradições esotéricas modernas e não representam um método
+  historicamente comprovado de adivinhação.
+</footer>
+</main>
+
+<script>
+const runes=[
+["ᚠ","Fehu","riqueza, recursos, prosperidade"],
+["ᚢ","Uruz","força, vitalidade, transformação"],
+["ᚦ","Thurisaz","confronto, proteção, força bruta"],
+["ᚨ","Ansuz","comunicação, sabedoria, inspiração"],
+["ᚱ","Raidho","jornada, movimento, direção"],
+["ᚲ","Kenaz","clareza, conhecimento, criatividade"],
+["ᚷ","Gebo","troca, presentes, parceria"],
+["ᚹ","Wunjo","alegria, harmonia, realização"],
+["ᚺ","Hagalaz","ruptura, mudança, forças inesperadas"],
+["ᚾ","Nauthiz","necessidade, restrição, perseverança"],
+["ᛁ","Isa","pausa, imobilidade, concentração"],
+["ᛃ","Jera","colheita, ciclos, recompensa"],
+["ᛇ","Eihwaz","resistência, transição, perseverança"],
+["ᛈ","Perthro","mistério, acaso, destino"],
+["ᛉ","Algiz","proteção, alerta, conexão"],
+["ᛋ","Sowilo","sol, sucesso, vitalidade"],
+["ᛏ","Tiwaz","justiça, coragem, honra"],
+["ᛒ","Berkano","renascimento, cuidado, crescimento"],
+["ᛖ","Ehwaz","movimento, confiança, cooperação"],
+["ᛗ","Mannaz","humanidade, identidade, consciência"],
+["ᛚ","Laguz","intuição, fluxo, emoções"],
+["ᛜ","Ingwaz","potencial, gestação, conclusão"],
+["ᛞ","Dagaz","despertar, transformação, clareza"],
+["ᛟ","Othala","herança, raízes, pertencimento"]
+];
+
+const positions=["Passado","Presente","Futuro"];
+const cards=document.getElementById("cards");
+const grid=document.getElementById("runeGrid");
+
+runes.forEach(r=>{
+  const el=document.createElement("div"); el.className="mini";
+  el.innerHTML=`<div class="symbol">${r[0]}</div><small>${r[1]}</small>`;
+  grid.appendChild(el);
+});
+
+function draw(){
+  const n=+document.getElementById("count").value;
+  const reversedAllowed=document.getElementById("reversed").checked;
+  const pool=[...runes], selected=[];
+  for(let i=0;i<n;i++){
+    const idx=Math.floor(Math.random()*pool.length);
+    const r=pool.splice(idx,1)[0];
+    selected.push({...r, reversed:reversedAllowed && Math.random()<.5});
+  }
+  cards.innerHTML="";
+  selected.forEach((r,i)=>{
+    const meaning=r.reversed ? "energia bloqueada, interiorizada ou em desequilíbrio" : r[2];
+    const el=document.createElement("article");el.className="card";
+    el.innerHTML=`
+      <div class="rune">${r[0]}</div>
+      <div class="name">${r[1]}${r.reversed?" — invertida":""}</div>
+      <div class="position">${n===3?positions[i]:"Sua runa"}</div>
+      <div class="meaning">${meaning}</div>`;
+    cards.appendChild(el);
+  });
+  const q=document.getElementById("question").value.trim();
+  const interp=document.getElementById("interpretation");
+  interp.style.display="block";
+  const summary=n===1
+    ? `<p><strong>${selected[0][1]}</strong> convida você a observar o tema de <strong>${selected[0][2]}</strong>. Use a leitura como um instrumento de reflexão sobre sua pergunta, não como uma previsão inevitável.</p>`
+    : `<p>As três posições sugerem uma narrativa: <strong>${selected[0][1]}</strong> no passado, <strong>${selected[1][1]}</strong> no presente e <strong>${selected[2][1]}</strong> no futuro. Observe as relações entre os símbolos e o que eles despertam em você.</p>`;
+  interp.innerHTML=`<h2>${q?`Leitura para: “${escapeHtml(q)}”`:"Sua leitura"}</h2>${summary}`;
+}
+function escapeHtml(s){return s.replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#039;"}[m]));}
+
+cards.innerHTML='<div class="card"><div class="placeholder">ᚱ</div><div class="position">Sua leitura aparecerá aqui</div></div>';
+</script>
+</body>
+</html>
