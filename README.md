@@ -3,11 +3,6 @@
 ## Abrir localmente
 Extraia o ZIP e abra `index.html` no navegador. O projeto é estático.
 
-## Publicar no GitHub Pages
-1. Envie todos os arquivos ao repositório.
-2. Em Settings → Pages, selecione a branch principal e a pasta raiz.
-3. Salve e aguarde a publicação.
-
 ## Páginas
 - index.html — início
 - oraculo.html — tiragem reflexiva
