@@ -1,7 +1,5 @@
 # Futhark V5 — Atlas simbólico
 
-## Abrir localmente
-Extraia o ZIP e abra `index.html` no navegador. O projeto é estático.
 
 ## Páginas
 - index.html — início
