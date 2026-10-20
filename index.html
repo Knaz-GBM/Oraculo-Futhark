@@ -1,1 +1,103 @@
-<!doctype html><html lang="pt-BR"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Atlas · Futhark</title><link rel="stylesheet" href="assets/style.css"></head><body><header class="nav"><div class="wrap navin"><a class="brand" href="index.html"><span>ᚠ</span>FUTHARK</a><nav class="links"><a href="oraculo.html">Oráculo</a><a href="runas.html">Runas</a><a href="mapa.html">Mapa</a><a href="atlas.html">Yggdrasil</a><a href="povos.html">Povos & Seres</a><a href="cosmologia.html">Cosmologia</a></nav></div></header><main class="wrap"><section class="hero"><div class="eyebrow">Atlas simbólico · Elder Futhark</div><h1>Não leia apenas a runa.<br><span style="color:var(--a2)">Explore a rede.</span></h1><p>Um universo interativo de runas, forças simbólicas, figuras, povos e mundos da mitologia nórdica. Cada símbolo é uma porta para uma rede de relações — não uma resposta isolada.</p><div class="actions"><a class="btn primary" href="oraculo.html">Abrir o oráculo ↗</a><a class="btn" href="mapa.html">Explorar o mapa</a></div></section><section class="section"><h2>Entre no atlas</h2><div class="grid"><a class="card" href="runas.html"><div class="glyph">ᚨ</div><h3>Livro das Runas</h3><p>24 fichas com som, força, luz, sombra e conexões.</p></a><a class="card" href="mapa.html"><div class="glyph">⌘</div><h3>Mapa de relações</h3><p>Explore a rede entre runas, forças, figuras e mundos.</p></a><a class="card" href="atlas.html"><div class="glyph">ᛇ</div><h3>Yggdrasil</h3><p>Uma leitura visual da cosmologia nórdica.</p></a><a class="card" href="oraculo.html"><div class="glyph">ᚾ</div><h3>Saga de três runas</h3><p>Uma tiragem para reflexão: origem, provação e caminho.</p></a><a class="card" href="povos.html"><div class="glyph">ᚦ</div><h3>Povos & seres</h3><p>Grupos e criaturas sem transformar a mitologia em facções rígidas.</p></a><a class="card" href="cosmologia.html"><div class="glyph">✧</div><h3>Forças simbólicas</h3><p>Oito lentes interpretativas do projeto.</p></a></div></section><section class="section"><div class="notice"><b>Nota de método.</b> O Elder Futhark é um sistema histórico de 24 runas. As associações divinatórias, polaridades de luz/sombra e ligações entre runas, figuras e mundos são interpretações contemporâneas do projeto, não um manual antigo comprovado.</div></section></main><footer class="footer"><div class="wrap">FUTHARK · Atlas simbólico das runas.</div></footer><script src="data/runes.js"></script><script src="data/groups.js"></script></body></html>
+
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#080812">
+  <meta name="description" content="Explore as runas do Elder Futhark por meio de tiragens simbólicas para reflexão.">
+  <title>Oráculo · Futhark</title>
+  <link rel="stylesheet" href="assets/style.css">
+  <script src="data/runes.js" defer></script>
+  <script src="scripts/oracle.js" defer></script>
+</head>
+<body>
+  <header class="nav">
+    <div class="wrap navin">
+      <a class="brand" href="index.html"><span>ᚠ</span>FUTHARK</a>
+      <nav class="links" aria-label="Navegação principal">
+        <a href="oraculo.html" aria-current="page">Oráculo</a>
+        <a href="runas.html">Runas</a>
+        <a href="mapa.html">Mapa</a>
+        <a href="atlas.html">Yggdrasil</a>
+        <a href="povos.html">Povos &amp; Seres</a>
+        <a href="cosmologia.html">Cosmologia</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="wrap">
+    <section class="section">
+      <div class="eyebrow">Futhark V7 · Ritual de reflexão</div>
+      <h1>Oráculo das runas</h1>
+      <p class="muted">
+        Use os símbolos como um roteiro para investigar uma questão.
+        A interpretação é simbólica e não determina o que vai acontecer.
+      </p>
+
+      <div class="split oracle-setup">
+        <section class="card">
+          <label for="question">Sua pergunta ou tema</label>
+          <textarea
+            id="question"
+            maxlength="500"
+            placeholder="O que preciso compreender sobre esta mudança?"
+          ></textarea>
+
+          <label for="spread" class="oracle-label">Escolha uma tiragem</label>
+          <select id="spread" class="search oracle-select">
+            <option value="1">Foco — 1 runa</option>
+            <option value="3" selected>Saga — 3 runas</option>
+            <option value="5">Jornada — 5 runas</option>
+          </select>
+
+          <div class="actions">
+            <button class="btn primary" id="draw" type="button">
+              Sortear runas
+            </button>
+            <button class="btn" id="clear" type="button">
+              Limpar
+            </button>
+          </div>
+
+          <p class="small">
+            Cada sorteio é independente. Uma mesma runa não aparece duas
+            vezes na mesma tiragem.
+          </p>
+        </section>
+
+        <section class="card">
+          <h2>Como interpretar</h2>
+          <p>
+            <b>Observe:</b> quais ideias chamam sua atenção e por quê.
+          </p>
+          <p>
+            <b>Questione:</b> o que combina com sua situação e o que não combina?
+          </p>
+          <p>
+            <b>Relacione:</b> use as posições para organizar o pensamento,
+            não para terceirizar decisões.
+          </p>
+          <div class="notice oracle-note">
+            As posições normal e invertida são convenções simbólicas
+            contemporâneas deste projeto. Não constituem significados
+            universais comprovados para as runas históricas.
+          </div>
+        </section>
+      </div>
+
+      <section
+        id="result"
+        class="result"
+        aria-live="polite"
+        aria-atomic="false"
+        aria-label="Resultado da tiragem"
+      ></section>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <div class="wrap">FUTHARK · Atlas simbólico das runas.</div>
+  </footer>
+</body>
+</html>
